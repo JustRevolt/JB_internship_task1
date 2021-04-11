@@ -14,11 +14,12 @@ public class AlphabetGenerator {
     LinkedList<Integer> alphPart;
     LinkedList<Integer> alphSequence;
 
-    private void setLetterDependence(ArrayList<String> sortedStrings) {
+    private boolean setLetterDependence(ArrayList<String> sortedStrings) {
         letterDependence = new int[ALPHABET_LEN][ALPHABET_LEN];
         for (int i = 1; i < sortedStrings.size(); i++) {
             int minLen = min(sortedStrings.get(i - 1).length(), sortedStrings.get(i).length());
-            for (int j = 0; j < minLen; j++) {
+            int j;
+            for (j = 0; j < minLen; j++) {
                 int from = sortedStrings.get(i - 1).charAt(j) - 'a';
                 int to = sortedStrings.get(i).charAt(j) - 'a';
                 if (from != to) {
@@ -26,7 +27,11 @@ public class AlphabetGenerator {
                     break;
                 }
             }
+            if (j == minLen && sortedStrings.get(i).length() < sortedStrings.get(i - 1).length()){
+                return false;
+            }
         }
+        return false;
     }
 
     private int columnSum(int columnIndex, int[][] array) {
@@ -94,7 +99,9 @@ public class AlphabetGenerator {
         for (int i = 0; i < n; i++) {
             inputStr.add(scanner.nextLine());
         }
-        setLetterDependence(inputStr);
+        if(!setLetterDependence(inputStr)){
+            return "Impossible";
+        }
         if (!generateSequence()) {
             return "Impossible";
         }
